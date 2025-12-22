@@ -1,0 +1,522 @@
+[
+    {
+        "name": "Gold Gram 18k",
+        "price": "13,941,086"
+    },
+    {
+        "name": "Gold Mithqal",
+        "price": "60,390,000"
+    },
+    {
+        "name": "US Dollar",
+        "price": "132100"
+    },
+    {
+        "name": "Euro",
+        "price": "155300"
+    },
+    {
+        "name": "British Pound",
+        "price": "177650"
+    },
+    {
+        "name": "Swiss Franc",
+        "price": "166600"
+    },
+    {
+        "name": "Canadian Dollar",
+        "price": "96100"
+    },
+    {
+        "name": "Australian Dollar",
+        "price": "87850"
+    },
+    {
+        "name": "Swedish Krona",
+        "price": "14250"
+    },
+    {
+        "name": "Norwegian Krone",
+        "price": "13050"
+    },
+    {
+        "name": "Russian Ruble",
+        "price": "1675"
+    },
+    {
+        "name": "Thai Baht",
+        "price": "4240"
+    },
+    {
+        "name": "Singapore Dollar",
+        "price": "102500"
+    },
+    {
+        "name": "Hong Kong Dollar",
+        "price": "16900"
+    },
+    {
+        "name": "Azerbaijani Manat",
+        "price": "77300"
+    },
+    {
+        "name": "10Armenian Dram",
+        "price": "3460"
+    },
+    {
+        "name": "Danish Krone",
+        "price": "20700"
+    },
+    {
+        "name": "UAE Dirham",
+        "price": "36300"
+    },
+    {
+        "name": "10Japanese Yen",
+        "price": "8410"
+    },
+    {
+        "name": "Turkish Lira",
+        "price": "3065"
+    },
+    {
+        "name": "Chinese Yuan",
+        "price": "18800"
+    },
+    {
+        "name": "KSA Riyal",
+        "price": "35150"
+    },
+    {
+        "name": "Indian Rupee",
+        "price": "1470"
+    },
+    {
+        "name": "Ringgit",
+        "price": "32300"
+    },
+    {
+        "name": "Afghan Afghani",
+        "price": "1990"
+    },
+    {
+        "name": "Kuwaiti Dinar",
+        "price": "429650"
+    },
+    {
+        "name": "100Iraqi Dinar",
+        "price": "10100"
+    },
+    {
+        "name": "Bahraini Dinar",
+        "price": "350100"
+    },
+    {
+        "name": "Omani Rial",
+        "price": "343550"
+    },
+    {
+        "name": "Qatari Riyal",
+        "price": "36100"
+    },
+    {
+        "name": "Bitcoin",
+        "price": 88126.55052645264
+    },
+    {
+        "name": "Ethereum",
+        "price": 2981.96009992962
+    },
+    {
+        "name": "Tether USDt",
+        "price": 0.9994486239548868
+    },
+    {
+        "name": "BNB",
+        "price": 855.3815562811801
+    },
+    {
+        "name": "XRP",
+        "price": 1.8936048730981527
+    },
+    {
+        "name": "USDC",
+        "price": 0.999634581182904
+    },
+    {
+        "name": "Solana",
+        "price": 125.06527940008591
+    },
+    {
+        "name": "TRON",
+        "price": 0.2842118787763338
+    },
+    {
+        "name": "Dogecoin",
+        "price": 0.1312600601384236
+    },
+    {
+        "name": "Cardano",
+        "price": 0.3692962337505458
+    },
+    {
+        "name": "Bitcoin Cash",
+        "price": 589.2249192610549
+    },
+    {
+        "name": "Chainlink",
+        "price": 12.466798210773788
+    },
+    {
+        "name": "Monero",
+        "price": 468.85921968455096
+    },
+    {
+        "name": "Hyperliquid",
+        "price": 24.70023258207221
+    },
+    {
+        "name": "UNUS SED LEO",
+        "price": 8.272391587909645
+    },
+    {
+        "name": "Zcash",
+        "price": 432.3076841408691
+    },
+    {
+        "name": "Stellar",
+        "price": 0.2193112805412063
+    },
+    {
+        "name": "Ethena USDe",
+        "price": 0.9987423234517276
+    },
+    {
+        "name": "Litecoin",
+        "price": 76.58469124838639
+    },
+    {
+        "name": "Sui",
+        "price": 1.4454010707297007
+    },
+    {
+        "name": "Dai",
+        "price": 0.9997797214811946
+    },
+    {
+        "name": "Avalanche",
+        "price": 12.308215081635437
+    },
+    {
+        "name": "Hedera",
+        "price": 0.1130771737691061
+    },
+    {
+        "name": "Shiba Inu",
+        "price": 7.159576676104793e-06
+    },
+    {
+        "name": "PayPal USD",
+        "price": 0.9994945453013552
+    },
+    {
+        "name": "Uniswap",
+        "price": 5.98832796792487
+    },
+    {
+        "name": "Cronos",
+        "price": 0.095186190258572
+    },
+    {
+        "name": "Mantle",
+        "price": 1.1079016833273674
+    },
+    {
+        "name": "Toncoin",
+        "price": 1.4584140676625263
+    },
+    {
+        "name": "World Liberty Financial",
+        "price": 0.1336354894278338
+    },
+    {
+        "name": "Canton",
+        "price": 0.0900959325918746
+    },
+    {
+        "name": "Polkadot",
+        "price": 1.7654044144000534
+    },
+    {
+        "name": "World Liberty Financial USD",
+        "price": 0.9990014260183095
+    },
+    {
+        "name": "Bitget Token",
+        "price": 3.4942043998697585
+    },
+    {
+        "name": "Bittensor",
+        "price": 222.1012148079622
+    },
+    {
+        "name": "OKB",
+        "price": 110.2232556956512
+    },
+    {
+        "name": "Aave",
+        "price": 148.6817390218032
+    },
+    {
+        "name": "NEAR Protocol",
+        "price": 1.4967853293372586
+    },
+    {
+        "name": "Ethereum Classic",
+        "price": 12.15034602368381
+    },
+    {
+        "name": "Aster",
+        "price": 0.6944970367226124
+    },
+    {
+        "name": "Midnight",
+        "price": 0.1039888093168344
+    },
+    {
+        "name": "Pi",
+        "price": 0.2033336696675835
+    },
+    {
+        "name": "MemeCore",
+        "price": 1.3593019208746753
+    },
+    {
+        "name": "Tether Gold",
+        "price": 4449.309907216809
+    },
+    {
+        "name": "Pepe",
+        "price": 3.962191924250798e-06
+    },
+    {
+        "name": "Internet Computer",
+        "price": 3.0125337550392794
+    },
+    {
+        "name": "Ethena",
+        "price": 0.2059732854137541
+    },
+    {
+        "name": "PAX Gold",
+        "price": 4467.770644934471
+    },
+    {
+        "name": "Sky",
+        "price": 0.0667785404493216
+    },
+    {
+        "name": "Global Dollar",
+        "price": 0.999615851182962
+    },
+    {
+        "name": "KuCoin Token",
+        "price": 10.83360475113457
+    },
+    {
+        "name": "Ripple USD",
+        "price": 0.9995664292829148
+    },
+    {
+        "name": "Kaspa",
+        "price": 0.0466716353772663
+    },
+    {
+        "name": "Worldcoin",
+        "price": 0.4992854094905845
+    },
+    {
+        "name": "Ondo",
+        "price": 0.3900942895882122
+    },
+    {
+        "name": "Aptos",
+        "price": 1.6084044187020972
+    },
+    {
+        "name": "Polygon (prev. MATIC)",
+        "price": 0.1071574984028767
+    },
+    {
+        "name": "Arbitrum",
+        "price": 0.1855270910366525
+    },
+    {
+        "name": "OFFICIAL TRUMP",
+        "price": 4.951827583842981
+    },
+    {
+        "name": "Algorand",
+        "price": 0.1111991369794172
+    },
+    {
+        "name": "Cosmos",
+        "price": 1.941950747458836
+    },
+    {
+        "name": "Flare",
+        "price": 0.0116660953709444
+    },
+    {
+        "name": "Filecoin",
+        "price": 1.2870858404780434
+    },
+    {
+        "name": "VeChain",
+        "price": 0.0104845209739636
+    },
+    {
+        "name": "Quant",
+        "price": 74.61218640872606
+    },
+    {
+        "name": "XDC Network",
+        "price": 0.0475328011543606
+    },
+    {
+        "name": "USDD",
+        "price": 0.9993831614009276
+    },
+    {
+        "name": "GateToken",
+        "price": 10.32163634622153
+    },
+    {
+        "name": "MYX Finance",
+        "price": 3.2677920285335
+    },
+    {
+        "name": "Sei",
+        "price": 0.1112277311757645
+    },
+    {
+        "name": "Pump.fun",
+        "price": 0.0019039743624135
+    },
+    {
+        "name": "Bonk",
+        "price": 8.051848895985613e-06
+    },
+    {
+        "name": "Render",
+        "price": 1.2767710816160291
+    },
+    {
+        "name": "PancakeSwap",
+        "price": 1.840929793946977
+    },
+    {
+        "name": "Nexo",
+        "price": 0.9225760336258276
+    },
+    {
+        "name": "Jupiter",
+        "price": 0.190007644631625
+    },
+    {
+        "name": "Audiera",
+        "price": 3.636775895180892
+    },
+    {
+        "name": "Pudgy Penguins",
+        "price": 0.0090582781084531
+    },
+    {
+        "name": "Curve DAO Token",
+        "price": 0.3767146150043886
+    },
+    {
+        "name": "Optimism",
+        "price": 0.269353016777769
+    },
+    {
+        "name": "First Digital USD",
+        "price": 0.999055923595628
+    },
+    {
+        "name": "Story",
+        "price": 1.501952038810991
+    },
+    {
+        "name": "TrueUSD",
+        "price": 0.996030508116604
+    },
+    {
+        "name": "Lido DAO",
+        "price": 0.5405768882485356
+    },
+    {
+        "name": "Dash",
+        "price": 37.7106193262433
+    },
+    {
+        "name": "Artificial Superintelligence Alliance",
+        "price": 0.2040568874470471
+    },
+    {
+        "name": "Tezos",
+        "price": 0.4380925467083861
+    },
+    {
+        "name": "ether.fi",
+        "price": 0.7124889482578841
+    },
+    {
+        "name": "Virtuals Protocol",
+        "price": 0.7029516703301745
+    },
+    {
+        "name": "AB",
+        "price": 0.004969617223734
+    },
+    {
+        "name": "Merlin Chain",
+        "price": 0.4221949891257006
+    },
+    {
+        "name": "Injective",
+        "price": 4.594076741500522
+    },
+    {
+        "name": "Aerodrome Finance",
+        "price": 0.4953077844879089
+    },
+    {
+        "name": "Morpho",
+        "price": 1.1967543086491057
+    },
+    {
+        "name": "Humanity Protocol",
+        "price": 0.2037579114444464
+    },
+    {
+        "name": "Immutable",
+        "price": 0.2248123205478981
+    },
+    {
+        "name": "Stacks",
+        "price": 0.2456630106414531
+    },
+    {
+        "name": "SPX6900",
+        "price": 0.4771917188319234
+    },
+    {
+        "name": "The Graph",
+        "price": 0.0376300889549904
+    },
+    {
+        "name": "JUST",
+        "price": 0.039855188232859
+    }
+]
