@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup
 from webdriver_manager.chrome import ChromeDriverManager
 
 def scrape_bonbast():
+    print("--- Starting Bonbast Scraper ---")
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
@@ -24,49 +25,61 @@ def scrape_bonbast():
     try:
         service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service, options=chrome_options)
-        driver.get("https://bonbast.com/")
+        
+        url = "https://bonbast.com/"
+        driver.get(url)
+
         time.sleep(15)
 
         soup = BeautifulSoup(driver.page_source, 'html.parser')
 
-        target_ids = {
-            "azadi": "Azadi",
-            "emami": "Emami",
-            "half": "½ Azadi",
-            "quarter": "¼ Azadi",
-            "gram": "Gerami",
-            "usd": "US Dollar",
-            "eur": "Euro",
+        top_items = {
             "gol18": "Gold Gram 18k",
-            "mithqal": "Gold Mithqal"
+            "mithqal": "Gold Mithqal",
+            "ounce": "Gold Ounce",
+            "ju18": "Gold Gram 18k Jewelry"
         }
         
-        for element_id, name in target_ids.items():
-            element = soup.find(id=element_id)
-            if element and element.text.strip():
-                data_list.append({"name": name, "price": element.text.strip()})
+        for elem_id, name in top_items.items():
+            element = soup.find(id=elem_id)
+            if element and any(c.isdigit() for c in element.text):
+                price = element.text.strip()
+                data_list.append({"name": name, "price": price})
 
         seen_names = {item['name'] for item in data_list}
-        for table in soup.find_all('table'):
-            for row in table.find_all('tr'):
+        
+        tables = soup.find_all('table')
+        for table in tables:
+            rows = table.find_all('tr')
+            for row in rows:
                 cols = row.find_all('td')
-                if len(cols) >= 4:
-                    name_raw = cols[1].get_text(strip=True)
-                    price = cols[-1].get_text(strip=True)
-                    
-                    if name_raw == "Coin Emami": name_raw = "Emami"
-                    elif name_raw == "Coin Azadi": name_raw = "Azadi"
-                    elif name_raw == "Coin Half": name_raw = "½ Azadi"
-                    elif name_raw == "Coin Quarter": name_raw = "¼ Azadi"
-                    elif name_raw == "Coin Gram": name_raw = "Gerami"
+                
+                name = ""
+                price = ""
+                
+                if len(cols) == 4:
+                    name = cols[1].get_text(strip=True)
+                    price = cols[2].get_text(strip=True)
+                
+                elif len(cols) == 3:
+                    name = cols[0].get_text(strip=True)
+                    price = cols[1].get_text(strip=True)
 
-                    if name_raw not in seen_names and any(c.isdigit() for c in price):
-                        data_list.append({"name": name_raw, "price": price})
-                        seen_names.add(name_raw)
+                if name and price and any(c.isdigit() for c in price):
+                    if "Emami" in name: name = "Emami"
+                    elif "Azadi" in name and "Gera" not in name and "½" not in name and "¼" not in name: name = "Azadi"
+                    elif "Half" in name: name = "½ Azadi"
+                    elif "Quarter" in name: name = "¼ Azadi"
+                    elif "Gram" in name and "Coin" in name: name = "Gerami"
+                    
+                    if name not in seen_names:
+                        data_list.append({"name": name, "price": price})
+                        seen_names.add(name)
 
         return data_list
 
-    except Exception:
+    except Exception as e:
+        print(f"Error scraping Bonbast: {e}")
         return []
     
     finally:
@@ -74,12 +87,16 @@ def scrape_bonbast():
             driver.quit()
 
 def fetch_crypto(url):
+    print("--- Starting Crypto Fetcher ---")
     try:
         df = pd.read_csv(url)
         if 'name' not in df.columns or 'price' not in df.columns:
             return []
-        return df[['name', 'price']].to_dict(orient='records')
-    except Exception:
+        
+        data = df[['name', 'price']].to_dict(orient='records')
+        return data
+    except Exception as e:
+        print(f"Error fetching crypto: {e}")
         return []
 
 if __name__ == "__main__":
@@ -95,5 +112,8 @@ if __name__ == "__main__":
             file_path = os.path.join(os.getcwd(), "merged_prices.json")
             with open(file_path, 'w', encoding='utf-8') as f:
                 json.dump(combined_data, f, ensure_ascii=False, indent=4)
-        except Exception:
-            pass
+            print(f"Successfully saved {len(combined_data)} items.")
+        except Exception as e:
+            print(f"Failed to save file: {e}")
+    else:
+        print("No data collected.")
