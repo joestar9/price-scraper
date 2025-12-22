@@ -111,7 +111,7 @@ if __name__ == "__main__":
         try:
             file_path = os.path.join(os.getcwd(), "merged_prices.json")
             with open(file_path, 'w', encoding='utf-8') as f:
-                json.dump(combined_data, f, ensure_ascii=False, indent=4)
+                json.dump(combined_data, f, ensure_ascii=False, separators=(',', ':'))
             print(f"Successfully saved {len(combined_data)} items.")
         except Exception as e:
             print(f"Failed to save file: {e}")
