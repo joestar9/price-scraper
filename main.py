@@ -30,15 +30,15 @@ def scrape_bonbast():
         soup = BeautifulSoup(driver.page_source, 'html.parser')
 
         target_ids = {
-            "gol18": "Gold Gram 18k",
-            "mithqal": "Gold Mithqal",
-            "emami": "Coin Emami",
-            "azadi": "Coin Azadi",
-            "half": "Coin Half",
-            "quarter": "Coin Quarter",
-            "gram": "Coin Gram",
+            "azadi": "Azadi",
+            "emami": "Emami",
+            "half": "½ Azadi",
+            "quarter": "¼ Azadi",
+            "gram": "Gerami",
             "usd": "US Dollar",
-            "eur": "Euro"
+            "eur": "Euro",
+            "gol18": "Gold Gram 18k",
+            "mithqal": "Gold Mithqal"
         }
         
         for element_id, name in target_ids.items():
@@ -53,6 +53,13 @@ def scrape_bonbast():
                 if len(cols) >= 4:
                     name_raw = cols[1].get_text(strip=True)
                     price = cols[-1].get_text(strip=True)
+                    
+                    if name_raw == "Coin Emami": name_raw = "Emami"
+                    elif name_raw == "Coin Azadi": name_raw = "Azadi"
+                    elif name_raw == "Coin Half": name_raw = "½ Azadi"
+                    elif name_raw == "Coin Quarter": name_raw = "¼ Azadi"
+                    elif name_raw == "Coin Gram": name_raw = "Gerami"
+
                     if name_raw not in seen_names and any(c.isdigit() for c in price):
                         data_list.append({"name": name_raw, "price": price})
                         seen_names.add(name_raw)
