@@ -90,10 +90,10 @@ def fetch_crypto(url):
     print("--- Starting Crypto Fetcher ---")
     try:
         df = pd.read_csv(url)
-        if 'name' not in df.columns or 'price' not in df.columns:
+        if 'name' not in df.columns or 'price' not in df.columns or 'percent_change_24h' not in df.columns:
             return []
         
-        data = df[['name', 'price']].to_dict(orient='records')
+        data = df[['name', 'price', 'percent_change_24h']].to_dict(orient='records')
         return data
     except Exception as e:
         print(f"Error fetching crypto: {e}")
