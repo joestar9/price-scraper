@@ -2,7 +2,7 @@ name: Update Prices
 
 on:
   schedule:
-    - cron: '*/25 * * * *'
+    - cron: '2,27,52 * * * *'
   workflow_dispatch:
 
 jobs:
