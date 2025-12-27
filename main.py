@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import csv
 import json
+import hashlib
 import os
 import re
 import time
@@ -432,6 +433,145 @@ def update_from_crypto_csv(payload: Payload, crypto: Dict[str, Tuple[float, floa
 
 _ALLOWED_KINDS = {"currency", "crypto", "gold"}
 
+# ---------------------------
+# Precomputed indexes (for Worker CPU)
+# ---------------------------
+
+_DIGIT_MAP = str.maketrans(
+    {
+        "۰": "0",
+        "۱": "1",
+        "۲": "2",
+        "۳": "3",
+        "۴": "4",
+        "۵": "5",
+        "۶": "6",
+        "۷": "7",
+        "۸": "8",
+        "۹": "9",
+        "٠": "0",
+        "١": "1",
+        "٢": "2",
+        "٣": "3",
+        "٤": "4",
+        "٥": "5",
+        "٦": "6",
+        "٧": "7",
+        "٨": "8",
+        "٩": "9",
+    }
+)
+
+_PUNCT_RE = re.compile(r"[\\[\\](){}<>\"'`~!@#$%^&*_+=|\\\\:;,.?/\\-]+")
+
+
+def normalize_alias(s: str) -> str:
+    """
+    Mirrors Worker-side normalization:
+      - Persian/Arabic digits -> ASCII
+      - ZWNJ -> space
+      - Arabic ي/ك -> Persian ی/ک
+      - lowercase + trim
+      - punctuation -> spaces + collapse
+    """
+    if not s:
+        return ""
+    s = s.translate(_DIGIT_MAP)
+    s = s.replace("\\u200c", " ").replace("ي", "ی").replace("ك", "ک").lower().strip()
+    s = _PUNCT_RE.sub(" ", s)
+    s = re.sub(r"\\s+", " ", s).strip()
+    return s
+
+
+_GENERIC_ALIAS = {"قیمت", "price"}
+
+
+def compute_alias_index(rates: Dict[str, Dict[str, Any]]) -> Dict[str, str]:
+    """
+    aliasIndex: normalized alias -> code
+    We prefer the first-seen mapping (stable with template insertion order).
+    """
+    out: Dict[str, str] = {}
+
+    def add(raw: str, code: str) -> None:
+        key = normalize_alias(raw)
+        if not key or key in _GENERIC_ALIAS:
+            return
+        if key not in out:
+            out[key] = code
+
+    for code, r in rates.items():
+        add(code, code)
+        title = str(r.get("title") or "")
+        fa = str(r.get("fa") or "")
+        add(title, code)
+        add(fa, code)
+        aliases = r.get("aliases")
+        if isinstance(aliases, list):
+            for a in aliases:
+                if isinstance(a, str):
+                    add(a, code)
+
+    return out
+
+
+_CURRENCY_PRIORITY = ["usd", "eur", "aed", "gbp", "try", "cad", "aud"]
+_CRYPTO_PRIORITY = ["btc", "eth", "ton", "usdt", "sol", "xrp", "bnb", "doge"]
+
+
+def compute_lists(rates: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
+    """
+    lists.fiat / lists.crypto with the same ordering the Worker used to build keyboards:
+      - fiat: gold/coin first (alpha), then currencies (priority, then alpha)
+      - crypto: priority, then alpha
+    """
+    gold_codes: list[str] = []
+    currency_codes: list[str] = []
+    crypto_codes: list[str] = []
+
+    for code, r in rates.items():
+        kind = str(r.get("kind") or "")
+        if kind == "crypto":
+            crypto_codes.append(code)
+            continue
+        if kind == "gold" or ("coin" in code) or ("gold" in code):
+            gold_codes.append(code)
+        else:
+            currency_codes.append(code)
+
+    gold_codes.sort()
+
+    def cur_key(c: str):
+        try:
+            return (_CURRENCY_PRIORITY.index(c), c)
+        except ValueError:
+            return (999, c)
+
+    def crypto_key(c: str):
+        try:
+            return (_CRYPTO_PRIORITY.index(c), c)
+        except ValueError:
+            return (999, c)
+
+    currency_codes.sort(key=cur_key)
+    crypto_codes.sort(key=crypto_key)
+
+    return {"fiat": gold_codes + currency_codes, "crypto": crypto_codes}
+
+
+def numeric_fingerprint(rates: Dict[str, Dict[str, Any]]) -> str:
+    """
+    A stable fingerprint of numeric fields so we can skip commits when nothing changed.
+    """
+    rows = []
+    for code in sorted(rates.keys()):
+        r = rates[code]
+        rows.append((code, r.get("price"), r.get("usdPrice"), r.get("change24h")))
+    blob = json.dumps(rows, ensure_ascii=False, separators=(",", ":"))
+    return hashlib.sha1(blob.encode("utf-8")).hexdigest()
+
+
+
 
 def validate_payload(payload: Payload) -> Tuple[bool, str]:
     if not payload.rates or not isinstance(payload.rates, dict):
@@ -466,7 +606,15 @@ def main() -> int:
         print("Tip: commit a baseline rates_v2_latest first (with metadata/aliases/etc).")
         return 2
 
+    # Load original template to preserve any custom top-level keys
+    with open(TEMPLATE_FILE, "r", encoding="utf-8") as f:
+        original = json.load(f) if os.path.getsize(TEMPLATE_FILE) > 0 else {}
+
     payload = load_template(TEMPLATE_FILE)
+
+    before_fp = numeric_fingerprint(payload.rates)
+    before_idx_blob = json.dumps([original.get("lists"), original.get("aliasIndex")], ensure_ascii=False, separators=(",", ":"))
+    before_fp = before_fp + "|" + hashlib.sha1(before_idx_blob.encode("utf-8")).hexdigest()
 
     bonbast = scrape_bonbast()
     if bonbast:
@@ -474,7 +622,7 @@ def main() -> int:
     else:
         print("[bonbast] no data collected; will keep previous prices")
 
-    crypto = {}
+    crypto: Dict[str, Dict[str, Any]] = {}
     try:
         crypto = fetch_crypto_csv(CRYPTO_CSV_URL)
     except Exception as e:
@@ -483,12 +631,24 @@ def main() -> int:
     if crypto:
         update_from_crypto_csv(payload, crypto)
     else:
-        print("[crypto] no data collected; will keep previous crypto values")
+        print("[crypto] no data collected; will keep previous crypto prices")
 
     # recompute usdPrice relations & local crypto prices
     recompute_usd_relations(payload)
 
-    # update fetchedAtMs + source
+    # Precompute lists + aliasIndex for Worker
+    new_lists = compute_lists(payload.rates)
+    new_alias_index = compute_alias_index(payload.rates)
+
+    after_fp = numeric_fingerprint(payload.rates)
+    after_idx_blob = json.dumps([new_lists, new_alias_index], ensure_ascii=False, separators=(",", ":"))
+    after_fp = after_fp + "|" + hashlib.sha1(after_idx_blob.encode("utf-8")).hexdigest()
+
+    if after_fp == before_fp:
+        print("ℹ️ no changes detected; skipping write/commit")
+        return 0
+
+    # update fetchedAtMs + source (only when we actually write)
     payload.fetchedAtMs = int(time.time() * 1000)
     payload.source = f"{BONBAST_URL} + {CRYPTO_CSV_URL}"
 
@@ -497,25 +657,28 @@ def main() -> int:
         print(f"[validate] FAILED: {msg}")
         return 3
 
-    # Write output (minified) preserving insertion order from template dict
     out_obj: Dict[str, Any] = {
         "fetchedAtMs": payload.fetchedAtMs,
         "source": payload.source,
         "rates": payload.rates,
+        "lists": new_lists,
+        "aliasIndex": new_alias_index,
     }
 
-    # Preserve any extra top-level keys you might add later (schemaVersion, lists, etc.)
-    # Load template again and merge unknown keys
-    with open(TEMPLATE_FILE, "r", encoding="utf-8") as f:
-        original = json.load(f)
-    for k, v in original.items():
-        if k not in out_obj:
-            out_obj[k] = v
+    # Preserve any extra top-level keys in the template (schemaVersion, notes, etc.)
+    if isinstance(original, dict):
+        for k, v in original.items():
+            if k not in out_obj:
+                out_obj[k] = v
+
+    # Ensure our computed indexes override template values
+    out_obj["lists"] = new_lists
+    out_obj["aliasIndex"] = new_alias_index
 
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         json.dump(out_obj, f, ensure_ascii=False, separators=(",", ":"))
 
-    print(f"✅ wrote {OUTPUT_FILE} with {len(payload.rates)} rates; fetchedAtMs={payload.fetchedAtMs}")
+    print(f"✅ wrote {OUTPUT_FILE} (rates={len(payload.rates)})")
     return 0
 
 
